@@ -5,10 +5,20 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import config from '../config/configuration';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 @Module({
   imports: [
     AppModule,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      playground: true,
+      // schemaファイルのパスを指定
+      autoSchemaFile: 'src/schema.gql',
+      // schemaを自動でsortされるためのオプションをONに
+      sortSchema: true,
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [config],
