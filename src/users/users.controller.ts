@@ -2,17 +2,17 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-@Resolver(() => User)
+@Resolver((of) => User)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Query(() => [User])
-  findAll() {
+  @Query(() => [User], { name: 'users' })
+  users() {
     return this.usersService.findAll();
   }
 
   @Query(() => User)
-  findOne(@Args('id', { type: () => ID }) id: string) {
+  user(@Args('id', { type: () => ID }) id: string) {
     return this.usersService.findOne(+id);
   }
 
