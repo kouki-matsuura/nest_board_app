@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import config from '../config/configuration';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { CorsMiddleware } from './cors.middleware';
 
 @Module({
   imports: [
@@ -41,4 +42,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CorsMiddleware).forRoutes('*');
+  }
+}
