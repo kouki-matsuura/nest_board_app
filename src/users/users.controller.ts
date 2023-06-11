@@ -2,6 +2,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import * as bcrypt from 'bcrypt';
 @Resolver((of) => User)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -17,7 +18,8 @@ export class UsersController {
   }
 
   @Mutation(() => User)
-  create(@Args('createUserDto') createUserDto: CreateUserDto) {
+  async signup(@Args('createUserDto') createUserDto: CreateUserDto) {
+    createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     return this.usersService.create(createUserDto);
   }
 
@@ -34,3 +36,8 @@ export class UsersController {
     return this.usersService.remove(+id);
   }
 }
+
+const createToken = (user: User) => {
+  const { id, name } = user;
+  return 'aaa';
+};

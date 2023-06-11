@@ -4,11 +4,12 @@
 
 input CreateUserDto {
   name: String!
+  password: String!
 }
 
 type Mutation {
-  create(createUserDto: CreateUserDto!): User!
   remove(id: Float!): User!
+  signup(createUserDto: CreateUserDto!): User!
   update(createUserDto: CreateUserDto!, id: Float!): User!
 }
 
@@ -20,4 +21,5 @@ type Query {
 type User {
   id: ID!
   name: String!
+  password: String!
 }

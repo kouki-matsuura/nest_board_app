@@ -15,10 +15,11 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async create({ name }: CreateUserDto): Promise<User> {
+  async create({ name, password }: CreateUserDto): Promise<User> {
     return await this.userRepository
       .save({
         name: name,
+        password: password,
       })
       .catch((e) => {
         throw new InternalServerErrorException(
@@ -55,6 +56,7 @@ export class UsersService {
     }
 
     user.name = updateUserDto.name;
+    user.password = updateUserDto.password;
     return this.userRepository.save(user);
   }
 
