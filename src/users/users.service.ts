@@ -49,6 +49,17 @@ export class UsersService {
       });
   }
 
+  async findOneByName(name: string): Promise<User> {
+    return await this.userRepository
+      .findOne({ where: { name: name } })
+      .then((res) => {
+        if (!res) {
+          throw new NotFoundException();
+        }
+        return res;
+      });
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id: id } });
     if (!user) {

@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
-import bcrypt from 'bcrypt'; 
+import * as bcrypt from 'bcrypt';
 
 type PasswordOmitUser = Omit<User, 'password'>;
 
 interface JWTPayload {
+  userId: User['id'];
   userName: User['name'];
 }
 
@@ -22,10 +23,11 @@ export class AuthService {
 
   // ユーザーの認証
   async validateUser(
-    id: User['id'],
+    name: User['name'],
     pass: User['password'],
   ): Promise<PasswordOmitUser | null> {
-    const user = await this.usersService.findOne(id);
+
+    const user = await this.usersService.findOneByName(name);
 
     if (user && bcrypt.compareSync(pass, user.password)) {
       const { password, ...result } = user;
@@ -38,7 +40,7 @@ export class AuthService {
   // jwtTokenを返す
   async login(user: PasswordOmitUser) {
     // jwtにつけるPayload情報
-    const payload: JWTPayload = { userName: user.name };
+    const payload: JWTPayload = { userId: user.id, userName: user.name };
 
     return {
       access_token: this.jwtService.sign(payload),
